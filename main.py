@@ -17,11 +17,11 @@ value_one = 1
 cardinal_points = {
                       'N': {
                           'Coordinate': 'Y',
-                          'Movement': 1
+                          'Movement': value_one
                       },
                       'E': {
                           'Coordinate': 'X',
-                          'Movement': 1
+                          'Movement': value_one
                       },
                       'S': {
                           'Coordinate': 'Y',
@@ -176,18 +176,16 @@ def read_set_of_instructions(rover_id):
     return final_set_of_movements
 
 
-def execute_movement(rover_position, requested_set_of_movements):
+def execute_movement(rover_initial_position, requested_set_of_movements):
     """
     execute_movement(): This function will take both parameters filled previously with valid data and will attempt
     performing the movement of Rover.
-    :param rover_position: This is the initial position of the Rover.
+    :param rover_initial_position: This is the initial position of the Rover.
     :param requested_set_of_movements: This is the list of valid movements asked to be performed by Rover.
     :return:
     """
     # Get initial position of rover, set is a current one
-    rover_current_position = rover_position
-
-    # TODO: Check we are not over exceeding edges of plane
+    rover_current_position = rover_initial_position
 
     # Don't return the complete set of movements till make sure we are not over exceeding the edges of plane
     for command in requested_set_of_movements:
@@ -203,6 +201,15 @@ def execute_movement(rover_position, requested_set_of_movements):
             rover_current_position[2] = sorted_cardinal_points_list[(sorted_cardinal_points_list.index(
                 rover_current_position[2]) + set_of_known_movements[str(command).upper()]) % len(
                 sorted_cardinal_points_list)]
+
+        # After having performed the action just check whether we are over exceeding the edges of the plane
+        # TODO: Check we are not over exceeding edges of plane before sending last position
+        for axis in coordinates_definition:
+            if value_zero < rover_current_position[coordinates_definition.index(axis)] < top_right_coordinates[coordinates_definition.index(axis)]:
+                pass
+            else:
+                break
+
     return rover_current_position
 
 
