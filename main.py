@@ -66,7 +66,6 @@ def read_rover_parameters(reading_message, types_input_list):
     # Keep reading until correct data to be fully received
     while not_correct_input:
         line_input = str(raw_input("{}: ".format(reading_message)))
-        print '\n'
 
         # Check for incomplete data
         if len(line_input) < (len(types_input_list) + value_one):
@@ -179,13 +178,16 @@ def read_set_of_instructions(rover_id):
 
 def execute_movement(rover_position, requested_set_of_movements):
     """
-
-    :param rover_position:
-    :param requested_set_of_movements:
+    execute_movement(): This function will take both parameters filled previously with valid data and will attempt
+    performing the movement of Rover.
+    :param rover_position: This is the initial position of the Rover.
+    :param requested_set_of_movements: This is the list of valid movements asked to be performed by Rover.
     :return:
     """
     # Get initial position of rover, set is a current one
     rover_current_position = rover_position
+
+    # TODO: Check we are not over exceeding edges of plane
 
     # Don't return the complete set of movements till make sure we are not over exceeding the edges of plane
     for command in requested_set_of_movements:
@@ -206,8 +208,8 @@ def execute_movement(rover_position, requested_set_of_movements):
 
 def main():
     """
-
-    :return:
+    main(): Function that will handle all the steps to deploy and move Rovers accordingly.
+    :return: Nothing
     """
     # Read first line, process it accordingly
     global top_right_coordinates
@@ -216,7 +218,11 @@ def main():
     # Rover's counter
     count = value_zero
 
-    while noEnd:
+    # Keep iterating until end
+    # TODO: An end
+    no_end = True
+
+    while no_end:
         count += value_one
         # Read second line, process it accordingly
         rover_position = read_rover_parameters("\nRover[{}] start position".format(count), second_line_types)
