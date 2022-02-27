@@ -69,15 +69,16 @@ class ExceptionValueLessThanZero(Exception):
 
 
 class ExceptionRoverPlacedOutOfPlane(Exception):
-    def __init__(self, error_position_found, affected_element, delimiter,
+    def __init__(self, error_position_found, affected_element, axis, delimiter,
                  default_message="Value can not be higher than Plane Axis defined"):
         self.error_position_found = error_position_found
         self.affected_element = affected_element
+        self.axis = axis
         self.delimiter = delimiter
         self.message = "\t\t[ERROR] - {}. Variable affected \"{}\" " \
-                       "is parameter [{}] and can not be higher than Axis edge previously defined \"{}\". " \
-                       "{}".format(default_message, self.affected_element, self.error_position_found, self.delimiter,
-                                   try_it_again)
+                       "is parameter [{}] and can not be higher than Axis edge \"{}\" previously defined \"{}\". " \
+                       "{}".format(default_message, self.affected_element, self.error_position_found, self.axis,
+                                   self.delimiter, try_it_again)
 
         if sys.version_info[0] < python_version_3:
             super(ExceptionRoverPlacedOutOfPlane, self).__init__(self.message)

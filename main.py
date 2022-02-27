@@ -109,6 +109,7 @@ def read_rover_parameters(reading_message, types_input_list):
                     if expected_type(element) > top_right_coordinates[count]:
                         # Check that introduced coordinates are not greater than coordinates introduced
                         raise ExceptionRoverPlacedOutOfPlane(count + value_one, element,
+                                                             coordinates_definition[count],
                                                              str(top_right_coordinates[count]))
 
                 # If string check whether it is present in cardinal_points or not
