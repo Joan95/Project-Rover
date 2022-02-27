@@ -118,7 +118,7 @@ class ExceptionRoverAttemptingToExitKnownPlane(Exception):
         self.first_wrong_position = first_wrong_position
         self.axis_broken = axis_broken
         self.axis_top_value = axis_top_value
-        self.message = "\t\t[ERROR] - {}. Edge broken at point [{}], " \
+        self.message = "\t\t[ERROR] - {}. Edge broken at point {}, " \
                        "Axis {}, maximum value for it is \"{}\". {}".format(default_message, self.first_wrong_position,
                                                                             self.axis_broken, self.axis_top_value,
                                                                             try_it_again)

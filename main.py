@@ -210,32 +210,23 @@ def main():
     # Rover's counter
     count = value_zero
 
-    # Clean correct input flag
-    not_correct_input = True
-
     # Keep iterating until end
     # TODO: An end
     no_end = True
 
     while no_end:
         count += value_one
+        # Set loop flags
+        not_correct_position_input = True
+        not_correct_instruction_input = True
 
-        while not_correct_input:
+        while not_correct_position_input:
             try:
                 # Read second line, process it accordingly
                 rover_position = read_rover_parameters("\nRover[{}] start position".format(count), second_line_types)
-                not_correct_input = False
 
-                try:
-                    # Try to read set of instructions
-                    requested_set_of_movements = read_set_of_instructions("Rover[{}]".format(count))
-
-                    # Try to execute received instruction
-                    print "Rover[{}] final position: {}".format(count, ' '.join(
-                        str(x) for x in execute_movement(rover_position, requested_set_of_movements)).replace("'", ""))
-
-                except ExceptionInstructionParameterNotKnown as e:
-                    print e
+                # If correct break while
+                not_correct_position_input = False
 
             except ExceptionIncompleteDataReceived as e:
                 print e
@@ -250,11 +241,25 @@ def main():
                 print e
             except ExceptionOrientationNotKnown as e:
                 print e
+
+        while not_correct_instruction_input:
+            try:
+                # Try to read set of instructions
+                requested_set_of_movements = read_set_of_instructions("Rover[{}]".format(count))
+
+                # Try to execute received instruction
+                print "Rover[{}] final position: {}".format(count, ' '.join(
+                    str(x) for x in execute_movement(rover_position,
+                                                     requested_set_of_movements)).replace("'", ""))
+
+                # If here break the while
+                not_correct_instruction_input = False
+            except ExceptionInstructionParameterNotKnown as e:
+                print e
             except ExceptionRoverAttemptingToExitKnownPlane as e:
                 print "\t[!!]\tOops... We do know Rover is a fearless explorer but it is better for its own " \
                       "security not letting it going through there!"
                 print e
-                print "\t\t\t[Execution not started, execution aborted]"
     pass
 
 
