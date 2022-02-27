@@ -66,7 +66,17 @@ second_line_types = [int, int, str]
 
 
 def read_rover_parameters(reading_message, types_input_list):
-    # TODO: Change description according new implementations (possible all exceptions fired)
+    """
+    read_rover_parameters(): function which will read input parameters and process them accordingly, those values
+    can be:
+        - First coordinates which will refer to top right coordinates of the plane
+        - Rover start coordinates: Known point where Rover will be deployed. That known point must be
+        inside the known plane, for obvious reasons: known plane is secure, not known plane may result with
+        undiscovered threatening harmful events.
+    :param reading_message: Text that will be displayed whilst asking for keyboard inputs.
+    :param types_input_list: List of types we are expecting to read.
+    :return: Return parameters read without extra spaces and parsed with known data.
+    """
 
     # List that will be returned
     final_values = list()
@@ -74,15 +84,14 @@ def read_rover_parameters(reading_message, types_input_list):
     # Read input, cast it to known type str
     line_input = str(raw_input("{}: ".format(reading_message)))
 
-    # Check for incomplete data
-    # TODO: Fix (+ value_one) not working for line_input expected length 5
-    if len(line_input) < (len(types_input_list) + value_one):
-        # Raise Incomplete Data Received Exception
-        raise ExceptionIncompleteDataReceived(len(line_input), len(types_input_list) + value_one)
-    else:
-        # Complete data received, try to get values, check if provided data is full of spaces only
-        values = line_input.split(' ')
+    # Gather all values which are not blank spaces, put them into a list
+    values = [param for param in line_input.split(' ') if param is not '']
 
+    # Check for incomplete data
+    if len(values) < (len(types_input_list)):
+        # Raise Incomplete Data Received Exception
+        raise ExceptionIncompleteDataReceived(len(values), len(types_input_list))
+    else:
         # Process length of values
         if len(values) > len(types_input_list):
             # Raise Extra Values Received incorrect input Exception
@@ -94,8 +103,14 @@ def read_rover_parameters(reading_message, types_input_list):
             try:
                 # Force the casting on element and wait if accepted or exception is raised
                 expected_type(element)
-                # If here, there is no exception store value in final_value
-                final_values.insert(count, expected_type(element))
+
+                if expected_type is str:
+                    # If here, there is no exception store value in final_value
+                    # Corrected issue with lower case for letter when storing string
+                    final_values.insert(count, expected_type(element).upper())
+                else:
+                    # If here, there is no exception store value in final_value
+                    final_values.insert(count, expected_type(element))
 
                 # If int in any case the value provided can be less than 0
                 if expected_type is int and expected_type(element) < value_zero:
@@ -110,7 +125,8 @@ def read_rover_parameters(reading_message, types_input_list):
                         # Check that introduced coordinates are not greater than coordinates introduced
                         raise ExceptionRoverPlacedOutOfPlane(count + value_one, element,
                                                              coordinates_definition[count],
-                                                             str(top_right_coordinates[count]))
+                                                             [str(coordinate) for coordinate in
+                                                              top_right_coordinates])
 
                 # If string check whether it is present in cardinal_points or not
                 if expected_type is str and element.upper() not in cardinal_points.keys():
@@ -125,7 +141,12 @@ def read_rover_parameters(reading_message, types_input_list):
 
 
 def read_set_of_instructions(rover_id):
-    # TODO: Change description according new implementations (possible all exceptions fired)
+    """
+    read_set_of_instructions(): Function that will read an instruction that we want Rover to execute.
+    If the instruction read is not known an exception will be raised.
+    :param rover_id: Rover identification, only for print purposes.
+    :return: Parsed list of known movements, removing additional spaces.
+    """
 
     # Read instruction
     line_input = str(raw_input("{} is waiting for instruction: ".format(rover_id)))
@@ -147,7 +168,13 @@ def read_set_of_instructions(rover_id):
 
 
 def execute_movement(rover_initial_position, requested_set_of_movements):
-    # TODO: Change description according new implementations (possible all exceptions fired)
+    """
+    execute_movement(): Function that will pre-execute and execute the full list of movements processed lately.
+    Whilst pre processing, if Rover gets out of the known plane an exception will be raised.
+    :param rover_initial_position: Initial position where Rover has been deployed.
+    :param requested_set_of_movements: The entire list of movements, we want Rover to execute.
+    :return: Last position after having executed all the list of movements.
+    """
 
     # Get initial position of rover, set is a current one
     rover_current_position = copy.deepcopy(rover_initial_position)
@@ -237,7 +264,7 @@ def main():
             except ExceptionValueLessThanZero as e:
                 print e
             except ExceptionRoverPlacedOutOfPlane as e:
-                print '\t[!!]\tOops... Rover, the fearless explorer, should better not be placed there.'
+                print '\t[!!]\tOops... Rover, the fearless explorer, should better not to be placed there.'
                 print e
             except ExceptionOrientationNotKnown as e:
                 print e
